@@ -13,4 +13,4 @@ There are 6 methods in this class.
 * `osCompare` is similar as `osCompare`, but it use senior comparator. For example, it can ignore some space ` ` ,tab `	` and line feed `\n` .
 * I guess you must have been troubled by overflow errors. So `lower_bound` is made. It names reference c++. It can binary Search the lower bound of overflow. 
 * If you want to make many tests at a time, try `run` .
-* At least, to clear the temporary file, `clear` !
+* Finally, to clear the temporary file, `clear` !

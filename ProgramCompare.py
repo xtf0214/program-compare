@@ -25,12 +25,18 @@ def randPair(a, b):
 
 class ProgramCompare:
 
-    def __init__(self, setData, std_code, cmp_code, compiler='g++', std='c++17', optimize='O2'):
-        self.std_exe = os.path.splitext(std_code)[0] + '.exe'
-        self.cmp_exe = os.path.splitext(cmp_code)[0] + '.exe'
+    def __init__(self, setData, std: str, cmp: str, cppstd='c++17', optimize='O2'):
         self.setData = setData
-        os.system(f'{compiler} {std_code} -o {self.std_exe} -std={std} -{optimize} -fexec-charset=GBK -w')
-        os.system(f'{compiler} {cmp_code} -o {self.cmp_exe} -std={std} -{optimize} -fexec-charset=GBK -w')
+        if std.endswith('.exe') and cmp.endswith('.exe'):
+            self.std_exe = std
+            self.cmp_exe = cmp
+        else:
+            self.std_exe = os.path.splitext(std)[0] + '.exe'
+            self.cmp_exe = os.path.splitext(cmp)[0] + '.exe'
+            print('\033[1;32mCompiling...\033[0m')
+            os.system(f'g++ "{std}" -o "{self.std_exe}" -std={cppstd} -{optimize} -fexec-charset=GBK -w')
+            os.system(f'g++ "{cmp}" -o "{self.cmp_exe}" -std={cppstd} -{optimize} -fexec-charset=GBK -w')
+            print('\033[1;32mSucceed!\033[0m')
 
     def osCompare(self, i=1):
         input_file = os.path.join(os.getcwd(), f'test{i}.in')
@@ -47,17 +53,17 @@ class ProgramCompare:
         self.setData(data, i)
         data.output_gen(self.std_exe)
 
-    def pyCompare(self, i=1, output=True):
+    def pyCompare(self, i=1, data_show=True):
         """ 使用setData()产生数据并比较cmp_exe和std_exe的输出 """
         data = cyaron.IO(file_prefix='test', data_id=i, disable_output=True)
         self.setData(data, i)
         try:
             cyaron.Compare.program(self.cmp_exe, input=data, std_program=self.std_exe)
-            if output:
+            if data_show:
                 print("\033[1;32mAC:\033[0m", f"test{i}.in")
             return True
         except:
-            if output:
+            if data_show:
                 print("\033[1;31mWA:\033[0m", f"test{i}.in")
             return False
 
@@ -72,11 +78,12 @@ class ProgramCompare:
                 r = mid
         print(f"\033[1;32m[{l},{r})\033[0m")
 
-    def run(self, n, compare=True):
+    def run(self, n, compare=True, data_show=True):
         if compare:
             for i in range(1, n + 1):
-                if not self.pyCompare(i, False):
-                    self.osCompare(i)
+                if not self.pyCompare(i, not data_show):
+                    if data_show:
+                        self.osCompare(i)
         else:
             for i in tqdm(range(1, n + 1)):
                 # time.sleep(math.pow(0.1, math.log10(n) + 1))

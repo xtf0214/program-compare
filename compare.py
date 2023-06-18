@@ -1,31 +1,44 @@
 from ProgramCompare import *
+from tqdm import tqdm
 
 
-def setData(data: cyaron.IO, i):
-    white = data.input_write
-    whiteln = data.input_writeln
-
-    N = 10
-    n = randint(1, N)
-    n = N
-    whiteln(n)
-    whiteln(sum(cyaron.Vector.random(n, [(0, n)]), []))
-    p = randint(1, N)
-    whiteln(p)
-    for _ in range(p):
-        l, r = randPair(1, n)
-        whiteln(l, r, randint(1, 100))
-    q = randint(1, N)
-    whiteln(q)
-    whiteln(sum(cyaron.Vector.random(q, [(0, n)]), []))
+def setData(data: cyaron.IO = cyaron.IO, id=1):
+    write = data.input_write
+    writeln = data.input_writeln
+    ##########
+    a = randint(1, 7)
+    b = randint(1, 7)
+    writeln(a, b)
 
 
-std_code = r'D:\Code\CPP\Debug\std.cpp'
-cmp_code = r'D:\Code\CPP\Debug\cmp.cpp'
-cmp = ProgramCompare(setData, std_code, cmp_code)
+def printData(i=1):
+    writeln = print
+    ##########
 
-cmp.run(5, compare=False)
-# cmp.lower_bound()
 
-time.sleep(2)
-cmp.clear()
+def outData(i=1):
+    with open(f'output{i}.out', 'w') as f:
+        write = lambda x: f.write(str(x) + ' ')
+        writeln = lambda x: f.write(str(x) + '\n')
+        #########
+
+
+std = r'D:\Code\CPP\Debug\compare\std.cpp'
+cmp = r'D:\Code\CPP\Debug\compare\cmp.cpp'
+compare = ProgramCompare(setData, std, cmp, cppstd='c++17')
+
+# ######## make data
+# compare.makeData(1e1)
+# compare.makeData(1e2)
+# compare.makeData(1e3)
+# compare.makeData(1e4)
+# compare.makeData(1e5)
+
+######### find the first error
+# cmp.lower_bound(1, int(1e8))
+
+######### brute test until error
+compare.run(10, compare=True, data_show=True)
+
+input(GREEN + 'finish!\n' + CLEAR)
+compare.clear()

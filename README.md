@@ -1,10 +1,14 @@
+# program-compare-UI
+
+![](img\GUI.png)
+
 # program-compare
 
 This is a program-comparer for programming competition. It's base on `cyaron`, but some simple encapsulation was made.
 
 ## Usage
 
-1. Copy `ProgramCompare.py` to you workspace
+1. Copy `ProgramCompare.py` to you workspace.
 2. New a python file and write `from ProgramCompare import *`
 3. New a `ProgramCompare` class and appoint the `std_cpp` path and the `cmp_cpp` path.
 4. Write the `setData` methods, it is a function object for making data according to the problem.

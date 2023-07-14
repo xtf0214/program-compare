@@ -1,6 +1,6 @@
 # program-compare-UI
 
-![](img\GUI.png)
+![](img/GUI.png)
 
 # program-compare
 

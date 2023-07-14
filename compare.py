@@ -38,7 +38,7 @@ compare = ProgramCompare(setData, std, cmp, cppstd='c++17')
 # cmp.lower_bound(1, int(1e8))
 
 ######### brute test until error
-compare.run(10, compare=True, data_show=True)
+compare.run(10, compare=True, show_input=False, show_output=False)
 
 input(GREEN + 'finish!\n' + CLEAR)
 compare.clear()

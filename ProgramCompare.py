@@ -2,7 +2,7 @@
 import math
 import os
 import time
-from random import choice, randint, random, randrange, uniform
+from random import randint
 
 import cyaron
 from tqdm import tqdm
@@ -10,18 +10,6 @@ from tqdm import tqdm
 RED = '\033[1;31m'
 GREEN = '\033[1;32m'
 CLEAR = '\033[0m'
-
-
-def randRegion(a: int, b: int):
-    """ 返回位数属于区间[a,b)的随机数
-    eg : randRegion(1, 2) in [1, 2, 3, 4, 5, 6, 7, 8, 9] """
-    n = randint(a, b)
-    l, r = 10**(n - 1), 10**n
-    return randrange(l, r)
-
-
-def randVector(Range: tuple, n: int):
-    return [randint(*Range) for _ in range(n)]
 
 
 def randPair(a: int, b: int):
@@ -34,12 +22,12 @@ def randPair(a: int, b: int):
 class ProgramCompare:
 
     def __init__(self, setData, std: str, cmp: str, cppstd='c++17', optimize='O2'):
-
+        # 设置./temp为workspace
         workspace = os.path.join(os.getcwd(), 'temp')
         if not os.path.exists(workspace):
             os.mkdir(workspace)
         os.chdir(workspace)
-
+        # 编译源代码
         self.setData = setData
         if std.endswith('.exe') and cmp.endswith('.exe'):
             self.std_exe = std
@@ -52,40 +40,38 @@ class ProgramCompare:
             os.system(f'g++ "{cmp}" -o "{self.cmp_exe}" -std={cppstd} -{optimize} -fexec-charset=GBK -w')
             print(GREEN + 'Succeed!' + CLEAR)
 
-    def osCompare(self, i: int = 1):
-        std_out = os.popen(self.std_exe + " < " + f'test{i}.in').read()
-        cmp_out = os.popen(self.cmp_exe + " < " + f'test{i}.in').read()
-        if std_out != cmp_out:
-            print(RED + 'WA:' + CLEAR, f'test{i}.in')
-            inputs = ''.join([i for i in open(f'test{i}.in', 'r', encoding='utf-8')])
-            print('\033[1;42m' + 'input:' + CLEAR + '\n' + inputs)
-            print('\033[1;43m' + 'std_out:' + CLEAR + '\n' + std_out)
-            print('\033[1;44m' + 'cmp_out:' + CLEAR + '\n' + cmp_out)
+    def compare(self, id: int = 1, show_input=True, show_output=True):
+        # 产生样例输入
+        data = cyaron.IO(file_prefix='test', data_id=id, disable_output=True)
+        self.setData(data, id)
+        data.close()
+        # 获取样例答案和样例输出
+        std_out = os.popen(self.std_exe + ' < ' + f'test{id}.in').read()
+        cmp_out = os.popen(self.cmp_exe + ' < ' + f'test{id}.in').read()
+        if std_out == cmp_out:
+            print(GREEN + 'AC:' + CLEAR, f'test{id}.in')
+            return True
+        else:
+            print(RED + 'WA:' + CLEAR, f'test{id}.in')
+            if show_input:
+                inputs = ''.join([line for line in open(f'test{id}.in', 'r', encoding='utf-8')])
+                print('\033[1;42m' + 'input:' + CLEAR + '\n' + inputs)
+            if show_output:
+                print('\033[1;43m' + 'std_out:' + CLEAR + '\n' + std_out)
+                print('\033[1;44m' + 'cmp_out:' + CLEAR + '\n' + cmp_out)
+            return False
 
     def makeData(self, i: int = 1):
-        """ 使用setData()产生数据并用std_exe产生标准输出test.out """
+        # 使用setData产生样例输入并用std_exe产生样例答案
         data = cyaron.IO(file_prefix='test', data_id=i)
         self.setData(data, i)
         data.output_gen(self.std_exe)
+        data.close()
 
-    def pyCompare(self, i: int = 1, data_show=True):
-        """ 使用setData()产生数据并比较cmp_exe和std_exe的输出 """
-        data = cyaron.IO(file_prefix='test', data_id=i, disable_output=True)
-        self.setData(data, i)
-        try:
-            cyaron.Compare.program(self.cmp_exe, input=data, std_program=self.std_exe)
-            if data_show:
-                print(GREEN + 'AC:' + CLEAR, f'test{i}.in')
-            return True
-        except:
-            if data_show:
-                print(RED + 'WA:' + CLEAR, f'test{i}.in')
-            return False
-
-    def lower_bound(self, l: int = 0, r: int = 1000000):
+    def lower_bound(self, l: int = 0, r: int = 1e6):
         while r - l > 1:
             mid = (l + r) // 2
-            if self.pyCompare(mid, False):
+            if self.compare(mid, False, False):
                 print(GREEN + f'[{l},{mid})' + CLEAR)
                 l = mid
             else:
@@ -93,17 +79,14 @@ class ProgramCompare:
                 r = mid
         print(GREEN + f'[{l},{r})' + CLEAR)
 
-    def run(self, n: int, compare=True, data_show=True):
+    def run(self, n: int, compare=True, show_input=True, show_output=True):
         if compare:
-            for i in range(1, n + 1):
-                if not self.pyCompare(i, not data_show):
-                    if data_show:
-                        self.osCompare(i)
+            for id in range(1, n + 1):
+                self.compare(id, show_input, show_output)
         else:
-            for i in tqdm(range(1, n + 1)):
-                # time.sleep(math.pow(0.1, math.log10(n) + 1))
+            for id in tqdm(range(1, n + 1)):
                 time.sleep(0.1 / n)
-                self.makeData(i)
+                self.makeData(id)
 
     def clear(self):
         os.system('del *.exe')

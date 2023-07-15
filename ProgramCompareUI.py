@@ -27,7 +27,8 @@ class ProgramCompare:
     def compare(self, id: int = 1, show_input=True, show_output=True):
         # 产生样例输入
         with open(f'test{id}.in', 'w') as file:
-            self.setData(file, id)
+            writeln = lambda a : file.write(' '.join(map(str, a)) + '\n')
+            self.setData(writeln, id)
         # 获取样例答案和样例输出
         std_out = os.popen(self.std_exe + ' < ' + f'test{id}.in').read()
         cmp_out = os.popen(self.cmp_exe + ' < ' + f'test{id}.in').read()
@@ -50,5 +51,8 @@ class ProgramCompare:
     def makeData(self, id: int = 1):
         # 使用setData产生样例输入并用std_exe产生样例答案
         with open(f'test{id}.in', 'w') as file:
-            self.setData(file, id)
-        os.system(f'{self.std_exe} < test{id}.in > test{id}.out')
+            writeln = lambda a : file.write(' '.join(map(str, a)) + '\n')
+            self.setData(writeln, id)
+        with open(f'test{id}.out', 'w') as file:
+            std_out = os.popen(self.std_exe + ' < ' + f'test{id}.in').read()
+            file.write(std_out)

@@ -1,44 +1,25 @@
 from ProgramCompare import *
-from tqdm import tqdm
 
 
-def setData(data: cyaron.IO = cyaron.IO, id=1):
-    write = data.input_write
-    writeln = data.input_writeln
-    ##########
-    a = randint(1, 7)
-    b = randint(1, 7)
-    writeln(a, b)
+def setData(data: TextIOWrapper, id=1):
+    writeln = lambda *args: print(*args, file=data)
+    #########
 
 
-def printData(i=1):
-    writeln = print
-    ##########
+std = r''
+cmp = r''
+compare = ProgramCompare(setData, std, cmp)
 
+# ######## make data or brute test
+scores = open('scores.txt', 'w')
+for id in range(1, 6):
+    scores.write(f"test{id} 1 #{id}#\n")
+    compare.makeData(id)
+    compare.compare(id, display_data_when_correct=False,
+                    display_input=False, display_output=True)
+scores.close()
 
-def outData(i=1):
-    with open(f'output{i}.out', 'w') as f:
-        write = lambda x: f.write(str(x) + ' ')
-        writeln = lambda x: f.write(str(x) + '\n')
-        #########
+# find the first error
+# compare.lower_bound(1, 1e8)
 
-
-std = r'D:\Code\CPP\Debug\compare\std.cpp'
-cmp = r'D:\Code\CPP\Debug\compare\cmp.cpp'
-compare = ProgramCompare(setData, std, cmp, cppstd='c++17')
-
-# ######## make data
-# compare.makeData(1e1)
-# compare.makeData(1e2)
-# compare.makeData(1e3)
-# compare.makeData(1e4)
-# compare.makeData(1e5)
-
-######### find the first error
-# cmp.lower_bound(1, int(1e8))
-
-######### brute test until error
-compare.run(10, compare=True, show_input=False, show_output=False)
-
-input(GREEN + 'finish!\n' + CLEAR)
-compare.clear()
+print(GREEN + 'finish!' + CLEAR)

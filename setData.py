@@ -1,4 +1,5 @@
 from random import randint
+from io import TextIOWrapper
 
 
 def randPair(a, b):
@@ -7,7 +8,9 @@ def randPair(a, b):
     return (l, r) if l < r else (r, l)
 
 
-def setData(writeln, id=1):
-    a = randint(1, 2e9)
-    b = randint(1, 2e9)
-    writeln([a, b])
+def setData(data: TextIOWrapper, id=1):
+    writeln = lambda *args: print(*args, file=data)
+    #########
+    a = randint(1, 100)
+    b = randint(1, 100)
+    writeln(a, b)

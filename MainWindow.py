@@ -77,10 +77,10 @@ class MainWindow(QMainWindow):
         run_layout.addWidget(self.testNum_LineEdit)
 
         # 创建选择框选择是否显示输入内容和输出内容
-        self.show_input_checkBox = QCheckBox("show_input")
-        run_layout.addWidget(self.show_input_checkBox)
-        self.show_output_checkBox = QCheckBox("show_output")
-        run_layout.addWidget(self.show_output_checkBox)
+        self.display_input_checkBox = QCheckBox("display_input")
+        run_layout.addWidget(self.display_input_checkBox)
+        self.display_output_checkBox = QCheckBox("display_output")
+        run_layout.addWidget(self.display_output_checkBox)
 
         # 创建按钮执行makeData
         self.makeData_button = QPushButton("makeData")
@@ -140,11 +140,11 @@ class MainWindow(QMainWindow):
             self.log("Please complie first.")
             return
         testNum = int(self.testNum_LineEdit.text())
-        show_input = self.show_input_checkBox.isChecked()
-        show_output = self.show_output_checkBox.isChecked()
+        display_input = self.display_input_checkBox.isChecked()
+        display_output = self.display_output_checkBox.isChecked()
         correct, wrong = 0, 0
         for id in range(1, testNum + 1):
-            if self.programCompare.compare(id, show_input, show_output):
+            if self.programCompare.compare(id, display_input, display_output):
                 correct += 1
             else:
                 wrong += 1

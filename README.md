@@ -40,11 +40,11 @@ This is a program-comparer for programming competition. It's base on `cyaron`, b
 ### compare
 
 `compare` using `os.popen()` to get the output from two exe files and comparing the text of two.
-* set `show_input = False` , `show_output = False`
-![](img/compare.png)		
 
-* set `show_input = True` , `show_output = True`
-![](img/show_data.png)
+* set `display_input = False` , `display_output = False`
+  ![](img/compare.png)
+* set `display_input = True` , `display_output = True`
+  ![](img/display_data.png)
 
 ### makeData
 
@@ -63,11 +63,3 @@ compare.makeData(1e5)
 
 If there is a boundary, an error will occur when the data is greater than it, and no error will occur when it is not greater than it. You can use `lower_bound` to find this boundary
 ![](img/lower_bound.png)
-
-### run
-
-If you want to make many tests at a time, try `run`.
-
-### clear
-
-Finally, to clear the temporary file, `clear`!
